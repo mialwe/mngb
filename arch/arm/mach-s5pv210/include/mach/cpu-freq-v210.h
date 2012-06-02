@@ -20,7 +20,6 @@
 #define APLL_VAL_1664	((1<<31)|(417<<16)|(3<<8)|(0))
 #define APLL_VAL_1332	((1<<31)|(444<<16)|(4<<8)|(0))
 #define APLL_VAL_1200	((1<<31)|(150<<16)|(3<<8)|(1))
-#define APLL_VAL_1128   ((1<<31)|(141<<16)|(3<<8)|(1))
 #define APLL_VAL_1000	((1<<31)|(125<<16)|(3<<8)|(1))
 #define APLL_VAL_800	((1<<31)|(100<<16)|(3<<8)|(1))
 
@@ -59,8 +58,5 @@ enum {
 extern void s5pv210_lock_dvfs_high_level(uint nToken, uint perf_level);
 extern void s5pv210_unlock_dvfs_high_level(unsigned int nToken);
 #endif
-
-void s5pv210_change_high_1000(void);
-void s5pv210_change_high_1128(void);
 
 #endif /* __ASM_ARCH_CPU_FREQ_H */
