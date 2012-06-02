@@ -94,12 +94,6 @@ if $BB [ -f /data/local/$CONFFILE ];then
         done
     fi
 
-    # enable CIFS module loading 
-    if $BB [ "`$BB grep CIFS /data/local/$CONFFILE`" ]; then
-      echo "MISC: loading cifs.ko..."
-      insmod /lib/modules/cifs.ko
-    fi
-
     # enable BTHID module loading 
     if $BB [ "`$BB grep BTHID /data/local/$CONFFILE`" ]; then
       echo "MISC: loading bthid.ko..."
@@ -148,13 +142,13 @@ if $BB [ -f /data/local/$CONFFILE ];then
     # set uv values
     if $BB [ "`$BB grep UV1 /data/local/$CONFFILE`" ]; then
         echo "UV1 found, setting..."
-        echo "0 0 25 50 75" > /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table
+        echo 0 0 25 50 75 > /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table
     elif $BB [ "`$BB grep UV2 /data/local/$CONFFILE`" ]; then
         echo "UV2 found, setting..."
-        echo "0 0 25 75 100" > /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table
+        echo 0 0 25 75 100 > /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table
     elif $BB [ "`$BB grep UV3 /data/local/$CONFFILE`" ]; then
         echo "UV3 found, setting..."
-        echo "0 0 50 75 125" > /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table
+        echo 0 0 50 75 125 > /sys/devices/system/cpu/cpu0/cpufreq/UV_mV_table
     else
         echo "using default values (no undervolting)..."
     fi
