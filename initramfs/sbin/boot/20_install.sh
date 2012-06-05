@@ -1,9 +1,6 @@
 echo "remounting /system readwrite..."
 /sbin/busybox mount -o remount,rw /system
 
-#echo "creating /system/etc/midnight..."
-#mkdir -p /system/etc/midnight
-
 # create xbin
 if /sbin/busybox [ -d /system/xbin ];then
     echo "/system/xbin found, skipping mkdir..."
@@ -22,15 +19,14 @@ else
     /sbin/busybox chmod 777 /system/etc/init.d
 fi
 
+echo "removing MidnightControl..:"
+/sbin/busybox rm -f /system/app/MidnightControl.apk
+
 # clean multiple su binaries
 echo "cleaning su installations except /system/xbin/su if any..."
 /sbin/busybox rm -f /system/bin/su
 /sbin/busybox rm -f /vendor/bin/su
 /sbin/busybox rm -f /system/sbin/su
-
-    /sbin/busybox rm -f /system/xbin/su
-    /sbin/busybox rm -f /system/app/Superuser.apk
-    /sbin/busybox rm -f /data/app/Superuser.apk
 
 # install xbin/su if not there
 if /sbin/busybox [ -f /system/xbin/su ];then
