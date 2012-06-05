@@ -362,5 +362,8 @@ echo
 echo "disabling /sbin/busybox, using /system/xbin/busybox now..."
 /sbin/busybox_disabled rm /sbin/busybox
 
+echo "removing unneeded initramfs stuff..."
+/sbin/busybox_disabled rm -rf /res/misc
+
 echo "mounting rootfs readonly..."
 /sbin/busybox_disabled mount -t rootfs -o remount,ro rootfs;
