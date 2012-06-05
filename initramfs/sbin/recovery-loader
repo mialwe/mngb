@@ -16,6 +16,8 @@ stop tvout
 
 if [ -f /cache/recovery/command ];
 then
+  /sbin/busybox cp /res/misc/fat.format /sbin/fat.format
+  /sbin/busybox chmod 744 /sbin/fat.format
   /sbin/busybox cp /res/keys-samsung /res/keys
   recovery-samsung
 else
