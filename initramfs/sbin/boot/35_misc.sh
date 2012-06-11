@@ -164,8 +164,64 @@ echo
 echo "freq/voltage  : ";cat /sys/devices/system/cpu/cpu0/cpufreq/frequency_voltage_table
 echo
 
+#-------------------------------------------------------------------------------
+# gamma
+#-------------------------------------------------------------------------------
+CONFFILE="midnight_gamma.conf"
+echo; echo "$(date) $CONFFILE"
+if $BB [ -f /data/local/$CONFFILE ];then
+    if $BB [ "`$BB grep GAM1 /data/local/$CONFFILE`" ]; then
+        echo "GAM1 found, setting..."
+        echo 1 > /sys/devices/virtual/misc/rgbb_multiplier/gamma
+    elif $BB [ "`$BB grep GAM3 /data/local/$CONFFILE`" ]; then
+        echo "GAM3 found, setting..."
+        echo 11 > /sys/devices/virtual/misc/rgbb_multiplier/gamma
+    else
+        echo "using default values..."
+        echo 7 > /sys/devices/virtual/misc/rgbb_multiplier/gamma
+    fi
+else
+    echo "/data/local/$CONFFILE not found, skipping..."
+fi
+
+#-------------------------------------------------------------------------------
+# rgb
+#-------------------------------------------------------------------------------
+#<string name="r">1887492806</string>
+#<string name="g">2169824215</string>
+#<string name="b">3209991042</string>       
+CONFFILE="midnight_rgb.conf"
+echo; echo "$(date) $CONFFILE"
+echo "rgb original:"
+cat /sys/devices/virtual/misc/rgbb_multiplier/red_multiplier
+cat /sys/devices/virtual/misc/rgbb_multiplier/green_multiplier
+cat /sys/devices/virtual/misc/rgbb_multiplier/blue_multiplier
+if $BB [ -f /data/local/$CONFFILE ];then
+    if $BB [ "`$BB grep RGB2 /data/local/$CONFFILE`" ]; then
+        echo "RGB2 found, setting..."
+        echo 1837492806 > /sys/devices/virtual/misc/rgbb_multiplier/red_multiplier
+        echo 2019824215 > /sys/devices/virtual/misc/rgbb_multiplier/green_multiplier
+        echo 3209991042 > /sys/devices/virtual/misc/rgbb_multiplier/blue_multiplier
+    elif $BB [ "`$BB grep RGB3 /data/local/$CONFFILE`" ]; then
+        echo "RGB3 found, setting..."
+        echo 1737492806 > /sys/devices/virtual/misc/rgbb_multiplier/red_multiplier
+        echo 2119824215 > /sys/devices/virtual/misc/rgbb_multiplier/green_multiplier
+        echo 3209991042 > /sys/devices/virtual/misc/rgbb_multiplier/blue_multiplier
+    else
+        echo 1887492806 > /sys/devices/virtual/misc/rgbb_multiplier/red_multiplier
+        echo 2169824215 > /sys/devices/virtual/misc/rgbb_multiplier/green_multiplier
+        echo 3209991042 > /sys/devices/virtual/misc/rgbb_multiplier/blue_multiplier
+        echo "using default values..."
+    fi
+else
+    echo "/data/local/$CONFFILE not found, skipping..."
+fi
+echo "rgb new:"
+cat /sys/devices/virtual/misc/rgbb_multiplier/red_multiplier
+cat /sys/devices/virtual/misc/rgbb_multiplier/green_multiplier
+cat /sys/devices/virtual/misc/rgbb_multiplier/blue_multiplier        
+
 # activate later if needed...
-# cat_msg_sysfile "/sys/class/timed_output/vibrator/duty: " /sys/class/timed_output/vibrator/duty 
 # cat_msg_sysfile "/sys/class/misc/touchwake/enabled: " /sys/class/misc/touchwake/enabled
 
 #-------------------------------------------------------------------------------
