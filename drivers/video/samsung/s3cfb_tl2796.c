@@ -256,21 +256,11 @@ static void setup_gamma_regs(struct s5p_lcd *lcd, u16 gamma_regs[])
 	u8 brightness = lcd->bl;
 
     /*
-     * MIDNIGHT: lower brightness, don't touch 100%, testing...
-     *
-     * This will reduce brightness level more at
-     * low brightness than at mid/high levels. 
-     * It's an ugly hack but it seems to work ok for now.
-     * 
-     * Tweak this with values from 0 (default driver settings) to
-     * 6 (darkest adjustment) like this:
-     * echo YOUR_VALUE > /sys/class/misc/rgbb_multiplier/brightness_multiplier
+     * Nightmode:
+     * Use static brightness=1 if toggled via sysfs -> really dark screen
+     * for dark environment like room at night...
      */ 
-    if (nightmode == 0){
-        u8 brightness_orig = lcd->bl; 
-        brightness = brightness - ((255 / brightness) * bmult) + bmult;
-        brightness = (brightness > brightness_orig || brightness < min_brightness) ? min_brightness : brightness;
-    } else {
+    if (nightmode != 0){
         brightness = 1;
     }
     
@@ -795,22 +785,6 @@ static ssize_t min_brightness_store(struct device *dev, struct device_attribute 
 	return size;
 }
 
-static ssize_t brightness_multiplier_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	return sprintf(buf, "%u\n", bmult);
-}
-
-static ssize_t brightness_multiplier_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t size)
-{
-	u32 value;
-	if (sscanf(buf, "%u", &value) == 1)
-	{
-		bmult = value;
-		update_brightness(lcd_);
-	}
-	return size;
-}
-
 static ssize_t red_multiplier_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	return sprintf(buf, "%u\n", lcd_->color_mult[0]);
@@ -876,7 +850,6 @@ static ssize_t nightmode_store(struct device *dev, struct device_attribute *attr
 }
 
 static DEVICE_ATTR(min_brightness, S_IRUGO | S_IWUGO, min_brightness_show, min_brightness_store);
-static DEVICE_ATTR(brightness_multiplier, S_IRUGO | S_IWUGO, brightness_multiplier_show, brightness_multiplier_store);
 static DEVICE_ATTR(red_multiplier, S_IRUGO | S_IWUGO, red_multiplier_show, red_multiplier_store);
 static DEVICE_ATTR(green_multiplier, S_IRUGO | S_IWUGO, green_multiplier_show, green_multiplier_store);
 static DEVICE_ATTR(blue_multiplier, S_IRUGO | S_IWUGO, blue_multiplier_show, blue_multiplier_store);
@@ -885,7 +858,6 @@ static DEVICE_ATTR(nightmode, S_IRUGO | S_IWUGO, nightmode_show, nightmode_store
 
 static struct attribute *midnight_color_attributes[] = {
 	&dev_attr_min_brightness.attr,
-	&dev_attr_brightness_multiplier.attr,
 	&dev_attr_red_multiplier.attr,
 	&dev_attr_green_multiplier.attr,
 	&dev_attr_blue_multiplier.attr,
