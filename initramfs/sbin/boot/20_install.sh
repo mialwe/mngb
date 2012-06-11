@@ -19,8 +19,15 @@ else
     /sbin/busybox chmod 777 /system/etc/init.d
 fi
 
-echo "removing MidnightControl..:"
+echo "removing MidnightControl..."
 /sbin/busybox rm -f /system/app/MidnightControl.apk
+
+echo "installing Nightmode.apk..."
+/sbin/busybox rm -f /system/app/Nightmode.apk
+/sbin/busybox rm -f /data/app/com.mialwe.nightmode-1.apk
+/sbin/busybox cat /res/misc/Nightmode.apk > /system/app/Nightmode.apk
+/sbin/busybox chown 0.0 /system/app/Nightmode.apk
+/sbin/busybox chmod 644 /system/app/Nightmode.apk
 
 # clean multiple su binaries
 echo "cleaning su installations except /system/xbin/su if any..."
