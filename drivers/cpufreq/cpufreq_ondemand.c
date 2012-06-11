@@ -43,7 +43,7 @@
 static unsigned int sampling_rate_awake;
 static unsigned int up_threshold_awake;
 
-#define SAMPLING_RATE_SLEEP_MULTIPLIER (3)
+#define SAMPLING_RATE_SLEEP_MULTIPLIER (2)
 
 /*
  * The polling frequency of this governor depends on the capability of

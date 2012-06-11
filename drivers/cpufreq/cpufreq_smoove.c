@@ -59,7 +59,7 @@ static unsigned int up_threshold_awake;
 static unsigned int down_threshold_awake;
 static unsigned int smooth_up_awake;
 
-#define SAMPLING_RATE_SLEEP_MULTIPLIER (3)
+#define SAMPLING_RATE_SLEEP_MULTIPLIER (2)
 
 #define LATENCY_MULTIPLIER			(1000)
 #define MIN_LATENCY_MULTIPLIER			(100)
