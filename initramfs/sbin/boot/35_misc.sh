@@ -51,33 +51,50 @@ $BB mount|grep /dbdata
 $BB mount|grep /cache
 
 #-------------------------------------------------------------------------------
+# CPU maxfreq
+#-------------------------------------------------------------------------------
+CONFFILE="midnight_freq.conf"
+echo; echo "$(date) $CONFFILE"
+if $BB [ -f /data/local/$CONFFILE ];then
+    if $BB [ "`$BB grep 1128 /data/local/$CONFFILE`" ]; then
+        echo "oc1128 found, setting..."
+        echo 1 > /sys/devices/virtual/misc/midnight_cpufreq/oc1128
+        echo 1128000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    elif $BB [ "`$BB grep 800 /data/local/$CONFFILE`" ]; then
+        echo "max800 found, setting..."
+        echo 800000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    else
+        echo "using default 1Ghz maxfreq..."
+        echo 1000000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    fi
+else
+    echo "/data/local/$CONFFILE not found, skipping..."
+fi
+
+# load cpufreq_stats module after oc has been en-/disabled
+sleep 1
+$BB insmod /lib/modules/cpufreq_stats.ko
+
+#-------------------------------------------------------------------------------
+# CPU governor
+#-------------------------------------------------------------------------------
+CONFFILE="midnight_gov.conf"
+echo; echo "$(date) $CONFFILE"
+if $BB [ -f /data/local/$CONFFILE ];then
+    if $BB [[ "`$BB grep conservative /data/local/$CONFFILE`" || "`$BB grep ondemand /data/local/$CONFFILE`" || "`$BB grep smartassV2 /data/local/$CONFFILE`" || "`$BB grep smoove /data/local/$CONFFILE`" ]]; then
+        echo "valid governor found, setting..."
+        echo $($BB head -n 1 /data/local/$CONFFILE) > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    fi
+else
+    echo "/data/local/$CONFFILE not found, skipping..."
+fi
+
+#-------------------------------------------------------------------------------
 # misc kernel options
 #-------------------------------------------------------------------------------
 CONFFILE="midnight_options.conf"
 echo; echo "$(date) $CONFFILE"
 if $BB [ -f /data/local/$CONFFILE ];then
-
-    # set cpu max freq
-    if $BB [ "`$BB grep OC1128 /data/local/$CONFFILE`" ]; then
-        echo "oc1128 found, setting..."
-        echo 1 > /sys/devices/virtual/misc/midnight_cpufreq/oc1128
-        echo 1128000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-    else
-        echo "oc1128 not selected, using 1Ghz max..."
-        echo 1000000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-    fi
-
-    # set 800Mhz maxfreq if desired
-    if $BB [ "`$BB grep MAX800 /data/local/$CONFFILE`" ]; then
-        echo "max800 found, setting..."
-        echo 800000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-    fi
-
-    # set cpu governor
-    if $BB [ "`$BB grep ONDEMAND /data/local/$CONFFILE`" ]; then
-        echo "ONDEMAND found, setting..."
-        echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-    fi
 
     # sdcard read_ahead
     if $BB [ "`$BB grep 512 /data/local/$CONFFILE`" ]; then
@@ -125,10 +142,6 @@ if $BB [ -f /data/local/$CONFFILE ];then
 else
     echo "/data/local/$CONFFILE not found, skipping..."
 fi
-
-# load cpufreq_stats module after oc has been en-/disabled
-sleep 1
-$BB insmod /lib/modules/cpufreq_stats.ko
 
 echo;echo "modules:"
 $BB lsmod
