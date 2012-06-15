@@ -119,6 +119,13 @@ config CPU_FREQ_DEFAULT_GOV_CONSERVATIVE
 	  Be aware that not all cpufreq drivers support the conservative
 	  governor. If unsure have a look at the help section of the
 	  driver. Fallback governor will be the performance governor.
+
+config CPU_FREQ_DEFAULT_GOV_SMARTASS2
+  bool "smartass2"
+  select CPU_FREQ_GOV_SMARTASS2
+  help
+    Use the CPUFreq governor 'smartassV2' as default.
+
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -208,5 +215,12 @@ config CPU_FREQ_GOV_SMOOVE
 	  % frequency steps to get smooth up/downscaling dependant on CPU load.
 
 	  If in doubt, say N.
+
+config CPU_FREQ_GOV_SMARTASS2
+  tristate "'smartassV2' cpufreq governor"
+  depends on CPU_FREQ
+  help
+    'smartassV2' - a "smart" governor
+    If in doubt, say N.
 
 endif	# CPU_FREQ
